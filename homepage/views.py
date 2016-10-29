@@ -17,4 +17,3 @@ class HomepageView(KlassListMixin, TemplateView):
         context=super(HomepageView, self).get_context_data(**kwargs)
         context['school_schedule']=SchoolScheduleDetails.objects.get(pk=1)
         return context
-        

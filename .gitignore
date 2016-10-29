@@ -1,0 +1,6 @@
+static/
+static_root/
+env/
+SECRET_KEY
+settings_local.py
+*.pyc

@@ -6,11 +6,13 @@ from schedule.models import SchoolScheduleDetails, Slot
 from django.urls import reverse_lazy
 from django.http import HttpResponseRedirect
 from datetime import date, datetime, timedelta
+from django.contrib.auth.mixins import PermissionRequiredMixin
 
-class KlassCreateView(KlassListMixin, CreateView):
+class KlassCreateView(PermissionRequiredMixin, KlassListMixin, CreateView):
     model=Klass
     form_class=KlassForm
     template_name='classlists/add_klass_form.html'
+    permission_required='classlists.add_klass'
     
     def form_valid(self, form):
         new_klass=form.save()

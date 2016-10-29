@@ -15,6 +15,7 @@ class SlotAdmin(admin.ModelAdmin):
     def klass_name(self, obj):
         return obj.klass.name
 
+
 admin.site.register(SchoolScheduleDetails, SchoolScheduleDetailsAdmin)
 # admin.site.register(KlassScheduleDetails)
 admin.site.register(Slot,SlotAdmin)

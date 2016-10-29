@@ -15,10 +15,15 @@ Including another URLconf
 """
 from django.conf.urls import url, include
 from django.contrib import admin
+from django.contrib.auth import views
+from django.contrib.auth.views import logout
 
 urlpatterns = [
     url(r'^', include('homepage.urls')),
     url(r'^add/', include('classlists.urls')),
     url(r'^(?P<klass>\d+)/', include('schedule.urls')),
+    url(r'^logout/', logout,{'next_page':'/'}),
+    url(r'^', include('django.contrib.auth.urls')),
     url(r'^admin/', admin.site.urls),
+
 ]

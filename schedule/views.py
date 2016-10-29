@@ -56,6 +56,15 @@ class EditSlotView(KlassListMixin, FormView):
         context['slot']=slot
         context['student']=student
         return context
+        
+    def get_initial(self):
+        initial=super(EditSlotView, self).get_initial()
+        student=Student.objects.get(pk=self.kwargs['pk'])
+        if self.request.user.is_authenticated():
+            initial['first_name']=student.first_name
+            initial['last_name']=student.last_name
+            initial['phone']=student.phone  
+        return initial
     
     def form_valid(self, form):
         form_student=form.save(commit=False)
@@ -67,7 +76,7 @@ class EditSlotView(KlassListMixin, FormView):
             slot.save()
         else:
             ## should be done in clean method
-            form.add_error(None, "Something does not match, please try again or Cancel")
+            form.add_error(None, "Are you sure this is your spot? Something does not match. Please try again or click Cancel. ")
             return super(EditSlotView, self).form_invalid(form)
         return super(EditSlotView, self).form_valid(form)
     
