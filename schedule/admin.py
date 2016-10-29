@@ -1,9 +1,19 @@
 from django.contrib import admin
-from .models import SchoolScheduleDetails, Slot#, KlassScheduleDetails
+from .models import SchoolScheduleDetails, Slot, KlassScheduleDetails
 
 class SchoolScheduleDetailsAdmin(admin.ModelAdmin):
     list_display=('num_pm_slots','num_am_slots','slot_length','am_start','pm_start')
     
+    def klass_name(self, obj):
+        return obj.klass.name
+
+class KlassScheduleDetailsAdmin(admin.ModelAdmin):
+    list_display=('klass','num_pm_slots','num_am_slots','slot_length','am_start','pm_start')
+    list_filter=('klass__name',)
+    
+    def has_add_permission(self, request):
+        return False
+        
     def klass_name(self, obj):
         return obj.klass.name
 
@@ -17,5 +27,5 @@ class SlotAdmin(admin.ModelAdmin):
 
 
 admin.site.register(SchoolScheduleDetails, SchoolScheduleDetailsAdmin)
-# admin.site.register(KlassScheduleDetails)
+admin.site.register(KlassScheduleDetails, KlassScheduleDetailsAdmin)
 admin.site.register(Slot,SlotAdmin)

@@ -6,6 +6,7 @@ from classlists.models import Klass, Student, StudentForm, StudentDeleteForm
 from homepage.views import KlassListMixin
 from django.urls import reverse
 
+
 class KlassScheduleView(KlassListMixin, TemplateView):
     template_name='schedule/schedule.html'
 
@@ -16,11 +17,12 @@ class KlassScheduleView(KlassListMixin, TemplateView):
         context['klass_pm_schedule']=Slot.objects.filter(klass=klass, am_pm='pm')
         context['klass_am_schedule']=Slot.objects.filter(klass=klass, am_pm='am')
         return context
-        
+
 class BookSlotView(KlassListMixin, CreateView):
     model=Student
     form_class=StudentForm
     template_name='schedule/bookslot.html'
+    permission_required='classlists.add_klass'
 
     def get_context_data(self, **kwargs):
         context=super(BookSlotView, self).get_context_data(**kwargs)

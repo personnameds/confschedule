@@ -37,6 +37,7 @@
                     {% endif %}
                     {% if perms.is_staff %}
                         <li><a href="{% url 'klass-create-view' %}">Add Class</a></li>
+                        <li><a href="{% url 'klass-schedule-create-view' %}">Create Class Schedule</a></li>
                         <li><a href="{% url 'admin:index' %}">Admin</a></li>
                     {% endif %}
                     

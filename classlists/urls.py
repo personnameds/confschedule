@@ -1,6 +1,7 @@
 from django.conf.urls import url
-from .views import KlassCreateView
+from .views import KlassCreateView, KlassScheduleCreateView
 
 urlpatterns = [
-    url(r'^$', KlassCreateView.as_view(), name='klass-create-view'),
+    url(r'^class$', KlassCreateView.as_view(), name='klass-create-view'),
+    url(r'^schedule/', KlassScheduleCreateView.as_view(), name='klass-schedule-create-view'),
 ]
