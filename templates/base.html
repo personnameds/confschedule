@@ -24,11 +24,11 @@
         <div class="row">
             
             <!-- Sidebar -->
-            <div class="col-xs-4">
-                <ul class="nav nav-pills nav-stacked">
-                    <li><h3>Classes</h3></li>
+            <div class="col-xs-3">
+                <h4>Classes</h4>
+                <ul class="nav nav-stacked">
                     {% for klass in list_of_classes %}
-                        <li role="navigation"><a href="{% url 'klass-schedule-view' klass.pk %}">{{klass.teacher}} - Gr. {{klass.grade}} - Rm. {{klass.room}}</a></li>
+                        <li role="navigation"><a href="{% url 'klass-schedule-view' klass.pk %}">{{klass.teacher}}-Gr.{{klass.grade}}-Rm.{{klass.room}}</a></li>
                     {% endfor %}
                     {% if user.is_authenticated %}
                         <li><a href="{% url 'logout' %}">Logout</a></li>
@@ -43,11 +43,13 @@
                     
                 </ul>
             </div>
+            <div class="col-xs-9">
             <!-- end of Sidebar -->
             
             <!-- Main -->
             {% block main_content %}{% endblock %}
             <!-- end of Main -->
+            </div>
         </div>
         
         

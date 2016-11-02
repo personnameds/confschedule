@@ -1,42 +1,40 @@
 {% extends "base.html" %}
 
 {% block main_content %}
-    <div class="col-xs-8">
-        <h2>Cancel Interview</h2>
-        <form action="{% url 'edit-slot' klass.pk slot.pk student.pk %}" method="POST">
-            {%csrf_token%}
-            <h4>
-            Are you sure you want to cancel your interview with 
-            {{slot.klass.teacher}} in Rm. {{slot.klass.room}} on
-            {% if slot.am_pm == 'am' %}
-                Friday
-            {% else %}
-                Thursday
-            {% endif %}
-            from {{slot.start}} to {{slot.end}}
-            </h4>
-            {% if user.is_authenticated %}
-                <p>Is this the person whose interview you would like to cancel?<p>
-            {% else %}
-                <p>Just to make sure you are canceling your spot. Please type in your First Name, 
-                Last Name and Phone Number to cancel the spot.</p>
-            {% endif %}
-        
-            {% for err in form.non_field_errors %}
-                <div class="alert alert-danger">{{err}}</div>
-            {% endfor %}
-        
-            {% for field in form %}
-                <div class="form-group">
-                    <label>{{field.label}}</label>
-                    {{field}}
-                </div>
-            {% endfor %}
-               
-            <div class="form_input"> 
-                <input type="submit" value="Cancel Interview">
-                <input type="button" value="Cancel" onclick="location.href='{% url 'klass-schedule-view' klass.pk %}'">
+    <h2>Cancel Interview</h2>
+    <form action="{% url 'edit-slot' klass.pk slot.pk student.pk %}" method="POST">
+        {%csrf_token%}
+        <h4>
+        Are you sure you want to cancel your interview with 
+        {{slot.klass.teacher}} in Rm. {{slot.klass.room}} on
+        {% if slot.am_pm == 'am' %}
+            Friday
+        {% else %}
+            Thursday
+        {% endif %}
+        from {{slot.start}} to {{slot.end}}
+        </h4>
+        {% if user.is_authenticated %}
+            <p>Is this the person whose interview you would like to cancel?<p>
+        {% else %}
+            <p>Just to make sure you are canceling your spot. Please type in your First Name, 
+            Last Name and Phone Number to cancel the spot.</p>
+        {% endif %}
+    
+        {% for err in form.non_field_errors %}
+            <div class="alert alert-danger">{{err}}</div>
+        {% endfor %}
+    
+        {% for field in form %}
+            <div class="form-group">
+                <label>{{field.label}}</label>
+                {{field}}
             </div>
-        </form>
-    </div>
+        {% endfor %}
+           
+        <div class="form_input"> 
+            <input type="submit" value="Cancel Interview">
+            <input type="button" value="Cancel" onclick="location.href='{% url 'klass-schedule-view' klass.pk %}'">
+        </div>
+    </form>
 {% endblock %}

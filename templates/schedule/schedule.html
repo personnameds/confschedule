@@ -1,78 +1,76 @@
 {% extends "base.html" %}
 
 {% block main_content %}
-            <div class="col-xs-8">
-                <h1>{{klass.teacher}} - Gr. {{klass.grade}} - Rm. {{klass.room}}</h1>
-                <h2>Interview Schedule</h2>
-                <h3>Thursday Evening</h3>
-                <table class="table table-hover table-condensed">
-                    <thead>
+    <h1>{{klass.teacher}} - Gr. {{klass.grade}} - Rm. {{klass.room}}</h1>
+    <h2>Interview Schedule</h2>
+    <h3>Thursday Evening</h3>
+    <table class="table table-hover table-condensed">
+        <thead>
+            <tr>
+                <th>Start Time</th>
+                <th>End Time</th>
+                <th>Student</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for slot in klass_pm_schedule %}
+                <tr class="info">
+                    <td>{{slot.start}}</td>
+                    <td>{{slot.end}}</td>
+                    <td>
+                        {% if slot.student %}
+                            <a href="{% url 'edit-slot' klass.pk slot.pk slot.student.pk %}">
+                            {{slot.student.first_name}} {{slot.student.last_name|slice:":1"}}.
+                        {% else %}
+                            <a href="{% url 'book-slot' klass.pk slot.pk %}">
+                            Available
+                        {% endif %}
+                        </a>
+                    </td>
+                    {% if user.is_authenticated %}
                         <tr>
-                            <th>Start Time</th>
-                            <th>End Time</th>
-                            <th>Student</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for slot in klass_pm_schedule %}
-                            <tr class="info">
-                                <td>{{slot.start}}</td>
-                                <td>{{slot.end}}</td>
-                                <td>
-                                    {% if slot.student %}
-                                        <a href="{% url 'edit-slot' klass.pk slot.pk slot.student.pk %}">
-                                        {{slot.student.first_name}} {{slot.student.last_name|slice:":1"}}.
-                                    {% else %}
-                                        <a href="{% url 'book-slot' klass.pk slot.pk %}">
-                                        Open
-                                    {% endif %}
-                                    </a>
-                                </td>
-                                {% if user.is_authenticated %}
-                                    <tr>
-                                        <td>{{slot.student.phone}}</td>
-                                        <td>{{slot.student.email}}</td>
-                                        <td class="col-md-4">{{slot.student.comment}}</td>
-                                    </tr>  
-                                {% endif %}
-                            </tr>
-                     {% endfor %}
-                    </tbody>
-                </table>
-                <h3>Friday Morning</h3>
-                <table class="table table-hover table-condensed">
-                    <thead>
+                            <td>{{slot.student.phone}}</td>
+                            <td>{{slot.student.email}}</td>
+                            <td class="col-md-4">{{slot.student.comment}}</td>
+                        </tr>  
+                    {% endif %}
+                </tr>
+         {% endfor %}
+        </tbody>
+    </table>
+    <h3>Friday Morning</h3>
+    <table class="table table-hover table-condensed">
+        <thead>
+            <tr>
+                <th>Start Time</th>
+                <th>End Time</th>
+                <th>Student</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for slot in klass_am_schedule %}
+                <tr class="info">
+                    <td>{{slot.start}}</td>
+                    <td>{{slot.end}}</td>
+                    <td>
+                        {% if slot.student %}
+                            <a href="{% url 'edit-slot' klass.pk slot.pk slot.student.pk %}">
+                            {{slot.student.first_name}} {{slot.student.last_name|slice:":1"}}.
+                        {% else %}
+                            <a href="{% url 'book-slot' klass.pk slot.pk %}">
+                            Available
+                        {% endif %}
+                        </a>
+                    </td>
+                    {% if user.is_authenticated %}
                         <tr>
-                            <th>Start Time</th>
-                            <th>End Time</th>
-                            <th>Student</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for slot in klass_am_schedule %}
-                            <tr class="info">
-                                <td>{{slot.start}}</td>
-                                <td>{{slot.end}}</td>
-                                <td>
-                                    {% if slot.student %}
-                                        <a href="{% url 'edit-slot' klass.pk slot.pk slot.student.pk %}">
-                                        {{slot.student.first_name}} {{slot.student.last_name|slice:":1"}}.
-                                    {% else %}
-                                        <a href="{% url 'book-slot' klass.pk slot.pk %}">
-                                        Open
-                                    {% endif %}
-                                    </a>
-                                </td>
-                                {% if user.is_authenticated %}
-                                    <tr>
-                                        <td>{{slot.student.phone}}</td>
-                                        <td>{{slot.student.email}}</td>
-                                        <td class="col-md-4">{{slot.student.comment}}</td>
-                                    </tr>  
-                                {% endif %}
-                            </tr>
-                     {% endfor %}
-                    </tbody>
-                </table>
-            </div>
+                            <td>{{slot.student.phone}}</td>
+                            <td>{{slot.student.email}}</td>
+                            <td class="col-md-4">{{slot.student.comment}}</td>
+                        </tr>  
+                    {% endif %}
+                </tr>
+         {% endfor %}
+        </tbody>
+    </table>
 {% endblock %}
