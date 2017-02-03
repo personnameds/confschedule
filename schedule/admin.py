@@ -18,7 +18,7 @@ class KlassScheduleDetailsAdmin(admin.ModelAdmin):
         return obj.klass.name
 
 class SlotAdmin(admin.ModelAdmin):
-    list_display=('klass_name','student','start','end','am_pm')
+    list_display=('klass_name','student','start','end','am_pm','not_available')
     list_filter=('klass__name','am_pm')
     ordering=['klass','start'] 
     

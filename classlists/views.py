@@ -26,7 +26,8 @@ class KlassCreateView(PermissionRequiredMixin, KlassListMixin, CreateView):
             new_slot=Slot.objects.create(klass=new_klass,
                                          start=slot_start,
                                          end=slot_end,
-                                         am_pm='pm')
+                                         am_pm='pm',
+                                         not_available=False)
             slot_start=slot_end
 
         ##Create PM Slots for a Class
@@ -36,7 +37,8 @@ class KlassCreateView(PermissionRequiredMixin, KlassListMixin, CreateView):
             new_slot=Slot.objects.create(klass=new_klass,
                                          start=slot_start,
                                          end=slot_end,
-                                         am_pm='am')
+                                         am_pm='am',
+                                         not_available=False)
             slot_start=slot_end
 
         return HttpResponseRedirect(reverse_lazy('homepage-view'))
@@ -62,7 +64,8 @@ class KlassScheduleCreateView(PermissionRequiredMixin, KlassListMixin, CreateVie
             new_slot=Slot.objects.create(klass=klass,
                                          start=slot_start,
                                          end=slot_end,
-                                         am_pm='pm')
+                                         am_pm='pm',
+                                         not_available=False)
             slot_start=slot_end
 
         ##Create PM Slots for a Class
@@ -72,7 +75,8 @@ class KlassScheduleCreateView(PermissionRequiredMixin, KlassListMixin, CreateVie
             new_slot=Slot.objects.create(klass=klass,
                                          start=slot_start,
                                          end=slot_end,
-                                         am_pm='am')
+                                         am_pm='am',
+                                         not_available=False)
             slot_start=slot_end
 
         return HttpResponseRedirect(reverse_lazy('homepage-view'))

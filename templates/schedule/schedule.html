@@ -21,11 +21,18 @@
                         {% if slot.student %}
                             <a href="{% url 'edit-slot' klass.pk slot.pk slot.student.pk %}">
                             {{slot.student.first_name}} {{slot.student.last_name|slice:":1"}}.
+                            </a>
+                        {% elif slot.not_available %}
+                            {% if user.is_authenticated %}
+                                <a href="{% url 'book-slot' klass.pk slot.pk %}">Not Available</a>
+                            {% else %}
+                                Not Available
+                            {% endif %}
                         {% else %}
                             <a href="{% url 'book-slot' klass.pk slot.pk %}">
                             Available
+                            </a>
                         {% endif %}
-                        </a>
                     </td>
                     {% if user.is_authenticated %}
                         <tr>
@@ -56,11 +63,18 @@
                         {% if slot.student %}
                             <a href="{% url 'edit-slot' klass.pk slot.pk slot.student.pk %}">
                             {{slot.student.first_name}} {{slot.student.last_name|slice:":1"}}.
+                            </a>
+                        {% elif slot.not_available %}
+                            {% if user.is_authenticated %}
+                                <a href="{% url 'book-slot' klass.pk slot.pk %}">Not Available</a>
+                            {% else %}
+                                Not Available
+                            {% endif %}
                         {% else %}
                             <a href="{% url 'book-slot' klass.pk slot.pk %}">
                             Available
+                            </a>
                         {% endif %}
-                        </a>
                     </td>
                     {% if user.is_authenticated %}
                         <tr>

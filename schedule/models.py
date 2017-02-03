@@ -36,6 +36,7 @@ class Slot(models.Model):
     start=models.TimeField()
     end=models.TimeField()
     am_pm=models.CharField(max_length=2)
+    not_available=models.BooleanField()
 
        
     

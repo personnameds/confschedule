@@ -1,5 +1,5 @@
 from django.db import models
-from django.forms import ModelForm
+from django import forms
 from django.utils.translation import ugettext_lazy as _
 
 
@@ -16,7 +16,7 @@ class Klass(models.Model):
     def __str__(self):
         return '%s Gr. %s in Rm. %s' %(self.teacher, self.grade, self.room)
 
-class KlassForm(ModelForm):
+class KlassForm(forms.ModelForm):
     class Meta:
         model=Klass
         fields=['name','room','grade','teacher']
@@ -33,13 +33,24 @@ class Student(models.Model):
     def __str__(self):
         return '%s %s' %(self.first_name, self.last_name)
 
-class StudentForm(ModelForm):
+class StudentForm(forms.ModelForm):
     class Meta:
         model=Student
         fields=['first_name','last_name','klass','phone','email','comment',]
         labels={"klass":_("Class"),}
 
-class StudentDeleteForm(ModelForm):
+class StudentDeleteForm(forms.ModelForm):
     class Meta:
         model=Student
         fields=['first_name','last_name','phone']
+        
+class TeacherForm(forms.ModelForm):
+    notavail=forms.BooleanField(required=False, label='Not Available')
+    first_name=forms.CharField(max_length=25, required=False)
+    last_name=forms.CharField(max_length=25, required=False)
+    phone=forms.CharField(max_length=12, required=False)
+    klass=forms.ModelChoiceField(queryset=Klass.objects.all(),empty_label=None, required=False)    
+    class Meta:
+        model=Student
+        fields=['first_name','last_name','klass','phone','email','comment',]
+        labels={"klass":_("Class"),}

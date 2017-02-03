@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'schedule.apps.ScheduleConfig',
     'classlists.apps.ClasslistsConfig',
+    'print_schedule.apps.Print_ScheduleConfig',
 ]
 
 MIDDLEWARE = [

@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.views.generic.base import TemplateView
 from django.views.generic.edit import CreateView, FormView
 from .models import SchoolScheduleDetails, Slot
-from classlists.models import Klass, Student, StudentForm, StudentDeleteForm
+from classlists.models import Klass, Student, StudentForm, StudentDeleteForm, TeacherForm
 from homepage.views import KlassListMixin
 from django.urls import reverse
 
@@ -14,13 +14,12 @@ class KlassScheduleView(KlassListMixin, TemplateView):
         context=super(KlassScheduleView, self).get_context_data(**kwargs)
         klass=Klass.objects.get(pk=self.kwargs['klass'])
         context['klass']=klass
-        context['klass_pm_schedule']=Slot.objects.filter(klass=klass, am_pm='pm')
-        context['klass_am_schedule']=Slot.objects.filter(klass=klass, am_pm='am')
+        context['klass_pm_schedule']=Slot.objects.filter(klass=klass, am_pm='pm').order_by('start')
+        context['klass_am_schedule']=Slot.objects.filter(klass=klass, am_pm='am').order_by('start')
         return context
 
 class BookSlotView(KlassListMixin, CreateView):
     model=Student
-    form_class=StudentForm
     template_name='schedule/bookslot.html'
     permission_required='classlists.add_klass'
 
@@ -31,11 +30,22 @@ class BookSlotView(KlassListMixin, CreateView):
         context['klass']=klass
         context['slot']=slot
         return context
+
+    def get_form_class(self):
+        if self.request.user.is_authenticated():
+            form_class=TeacherForm
+        else:
+            form_class=StudentForm
+        return form_class
     
     def form_valid(self, form):
-        new_student=form.save()
         slot=Slot.objects.get(pk=self.kwargs['slot'])
-        slot.student=new_student
+        if form.cleaned_data['notavail']==True:
+            slot.not_available=True
+        else:
+            new_student=form.save()
+            slot.student=new_student
+            slot.not_available=False
         slot.save()
         return super(BookSlotView, self).form_valid(form)
         
@@ -58,7 +68,7 @@ class EditSlotView(KlassListMixin, FormView):
         context['slot']=slot
         context['student']=student
         return context
-        
+
     def get_initial(self):
         initial=super(EditSlotView, self).get_initial()
         student=Student.objects.get(pk=self.kwargs['pk'])
@@ -75,6 +85,7 @@ class EditSlotView(KlassListMixin, FormView):
         if form_student.first_name == student.first_name and form_student.last_name == student.last_name and form_student.phone == student.phone:
             student.delete()
             slot.student=None
+            slot.not_available=False
             slot.save()
         else:
             ## should be done in clean method
