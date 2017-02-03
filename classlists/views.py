@@ -7,6 +7,7 @@ from django.urls import reverse_lazy
 from django.http import HttpResponseRedirect
 from datetime import date, datetime, timedelta
 from django.contrib.auth.mixins import PermissionRequiredMixin
+from django.conf import settings
 
 class KlassCreateView(PermissionRequiredMixin, KlassListMixin, CreateView):
     model=Klass
@@ -16,7 +17,7 @@ class KlassCreateView(PermissionRequiredMixin, KlassListMixin, CreateView):
     
     def form_valid(self, form):
         new_klass=form.save()
-        school_schedule=SchoolScheduleDetails.objects.get(pk=1)
+        school_schedule=SchoolScheduleDetails.objects.get(name=settings.SCHOOL_NAME)
         slot_length=school_schedule.slot_length
         
         ##Create PM Slots for a Class

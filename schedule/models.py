@@ -3,6 +3,7 @@ from django.forms import ModelForm
 from classlists.models import Klass, Student
 
 class SchoolScheduleDetails(models.Model):
+    name=models.CharField(max_length=20)
     num_pm_slots=models.PositiveSmallIntegerField()
     num_am_slots=models.PositiveSmallIntegerField()
     slot_length=models.PositiveSmallIntegerField()
