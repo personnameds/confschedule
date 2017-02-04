@@ -22,7 +22,6 @@ urlpatterns = [
     url(r'^', include('homepage.urls')),
     url(r'^add/', include('classlists.urls')),
     url(r'^(?P<klass>\d+)/', include('schedule.urls')),
-    #url(r'^print/', include('print_schedule.urls')),
     url(r'^logout/', logout,{'next_page':'/'}),
     url(r'^', include('django.contrib.auth.urls')),
     url(r'^admin/', admin.site.urls),

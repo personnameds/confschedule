@@ -1,1 +1,3 @@
-# confschedule
+Printable
+Dates not hardcoded
+

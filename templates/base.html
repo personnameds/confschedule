@@ -29,7 +29,6 @@
                 <ul class="nav nav-stacked">
                     {% if user.is_authenticated %}
                         <li><a href="{% url 'logout' %}">Logout</a></li>
-                       <!-- <li><a href="{% url 'logout' %}">Print Schedules</a></li> -->
                     {% else %}
                         <li><a href="{% url 'login' %}">Teacher Login</a></li>
                     {% endif %}

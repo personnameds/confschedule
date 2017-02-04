@@ -97,3 +97,15 @@ class EditSlotView(KlassListMixin, FormView):
     def get_success_url(self):
         klass=Klass.objects.get(pk=self.kwargs['klass'])
         return reverse('klass-schedule-view', args=[klass.pk])
+
+class PrintScheduleView(KlassListMixin, TemplateView):
+    template_name='schedule/print.html'
+
+    def get_context_data(self, **kwargs):
+        context=super(PrintScheduleView, self).get_context_data(**kwargs)
+        klass=Klass.objects.get(pk=self.kwargs['klass'])
+        context['klass']=klass
+        context['klass_pm_schedule']=Slot.objects.filter(klass=klass, am_pm='pm').order_by('start')
+        context['klass_am_schedule']=Slot.objects.filter(klass=klass, am_pm='am').order_by('start')
+        return context
+    
