@@ -1,3 +1,2 @@
-Printable
 Dates not hardcoded
 

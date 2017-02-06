@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block main_content %}
-    <h2>Book Interview</h2>
+    <h2>Book Conference</h2>
     <h3>with {{slot.klass.teacher}} in Rm. {{slot.klass.room}}</h3>
     <h3>{% if slot.am_pm == 'am' %}
             Friday
@@ -14,7 +14,7 @@
         {%csrf_token%}
         {{form.as_p}}
         <div class="form_input"> 
-            <input type="submit" value="Book Interview">
+            <input type="submit" value="Book Conference">
             <input type="button" value="Cancel" onclick="location.href='{% url 'klass-schedule-view' klass.pk %}'">
         </div>
     </form>
