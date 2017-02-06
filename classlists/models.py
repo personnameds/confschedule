@@ -30,6 +30,8 @@ class Student(models.Model):
     comment=models.TextField(blank=True)
     klass=models.ForeignKey(Klass, on_delete=models.CASCADE)
     
+    prefix='student'
+    
     def __str__(self):
         return '%s %s' %(self.first_name, self.last_name)
 
@@ -50,6 +52,9 @@ class TeacherForm(forms.ModelForm):
     last_name=forms.CharField(max_length=25, required=False)
     phone=forms.CharField(max_length=12, required=False)
     klass=forms.ModelChoiceField(queryset=Klass.objects.all(),empty_label=None, required=False)    
+    
+    prefix='teacher'
+    
     class Meta:
         model=Student
         fields=['first_name','last_name','klass','phone','email','comment',]

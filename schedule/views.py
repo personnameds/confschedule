@@ -40,9 +40,13 @@ class BookSlotView(KlassListMixin, CreateView):
     
     def form_valid(self, form):
         slot=Slot.objects.get(pk=self.kwargs['slot'])
-        if form==TeacherForm:
+        if form.prefix=='teacher':
             if form.cleaned_data['notavail']==True:
                 slot.not_available=True
+            else:
+                new_student=form.save()
+                slot.student=new_student
+                slot.not_available=False
         else:
             new_student=form.save()
             slot.student=new_student
