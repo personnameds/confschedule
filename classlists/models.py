@@ -51,11 +51,10 @@ class TeacherForm(forms.ModelForm):
     first_name=forms.CharField(max_length=25, required=False)
     last_name=forms.CharField(max_length=25, required=False)
     phone=forms.CharField(max_length=12, required=False)
-    klass=forms.ModelChoiceField(queryset=Klass.objects.all(),empty_label=None, required=False)    
+    klass=forms.ModelChoiceField(queryset=Klass.objects.all(),empty_label=None, required=False, label='Class')    
     
     prefix='teacher'
     
     class Meta:
         model=Student
-        fields=['first_name','last_name','klass','phone','email','comment',]
-        labels={"klass":_("Class"),}
+        fields=['first_name','last_name','klass','phone','email','comment','notavail']

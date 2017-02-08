@@ -38,6 +38,12 @@ class BookSlotView(KlassListMixin, CreateView):
             form_class=StudentForm
         return form_class
     
+    def get_initial(self):
+        initial=super(BookSlotView, self).get_initial()
+        klass=Klass.objects.get(pk=self.kwargs['klass'])
+        initial['klass']=klass
+        return initial
+    
     def form_valid(self, form):
         slot=Slot.objects.get(pk=self.kwargs['slot'])
         if form.prefix=='teacher':
@@ -53,7 +59,6 @@ class BookSlotView(KlassListMixin, CreateView):
             slot.not_available=False
         slot.save()
         return super(BookSlotView, self).form_valid(form)
-        
         
     def get_success_url(self):
         klass=Klass.objects.get(pk=self.kwargs['klass'])
