@@ -28,7 +28,7 @@
                             </a>
                         {% elif slot.not_available %}
                             {% if user.is_authenticated %}
-                                <a href="{% url 'book-slot' klass.pk slot.pk %}">Not Available</a>
+                                <a href="{% url 'clear-slot' klass.pk slot.pk %}">Not Available</a>
                             {% else %}
                                 Not Available
                             {% endif %}
@@ -70,7 +70,7 @@
                             </a>
                         {% elif slot.not_available %}
                             {% if user.is_authenticated %}
-                                <a href="{% url 'book-slot' klass.pk slot.pk %}">Not Available</a>
+                                <a href="{% url 'clear-slot' klass.pk slot.pk %}">Not Available</a>
                             {% else %}
                                 Not Available
                             {% endif %}

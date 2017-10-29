@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.views.generic.base import TemplateView
 from django.views.generic.edit import CreateView, FormView
-from .models import SchoolScheduleDetails, Slot
+from .models import SchoolScheduleDetails, Slot, SlotForm
 from classlists.models import Klass, Student, StudentForm, StudentDeleteForm, TeacherForm
 from homepage.views import KlassListMixin
 from django.urls import reverse
@@ -109,6 +109,33 @@ class EditSlotView(KlassListMixin, FormView):
             form.add_error(None, "Are you sure this is your spot? Something does not match. Please try again or click Cancel. ")
             return super(EditSlotView, self).form_invalid(form)
         return super(EditSlotView, self).form_valid(form)
+    
+    def get_success_url(self):
+        klass=Klass.objects.get(pk=self.kwargs['klass'])
+        return reverse('klass-schedule-view', args=[klass.pk])
+
+class ClearSlotView(KlassListMixin, FormView):
+    model=Slot
+    form_class=SlotForm
+    template_name='schedule/clearslot.html'
+    
+    def get_context_data(self, **kwargs):
+        context=super(ClearSlotView, self).get_context_data(**kwargs)
+        klass=Klass.objects.get(pk=self.kwargs['klass'])
+        slot=Slot.objects.get(pk=self.kwargs['slot'])
+        context['klass']=klass
+        context['slot']=slot
+        return context
+
+    def form_valid(self, form):
+        form_slot=form.save(commit=False)
+        slot=Slot.objects.get(pk=self.kwargs['slot'])
+        if form_slot.not_available:
+            slot.not_available=False
+        else:
+            slot.not_available=True
+        slot.save()
+        return super(ClearSlotView, self).form_valid(form)
     
     def get_success_url(self):
         klass=Klass.objects.get(pk=self.kwargs['klass'])

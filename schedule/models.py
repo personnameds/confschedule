@@ -39,6 +39,8 @@ class Slot(models.Model):
     am_pm=models.CharField(max_length=2)
     not_available=models.BooleanField()
 
-       
-    
+class SlotForm(ModelForm):
+    class Meta:
+        model=Slot
+        fields=['not_available',]
     
