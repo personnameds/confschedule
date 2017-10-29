@@ -5,6 +5,13 @@ from .models import SchoolScheduleDetails, Slot
 from classlists.models import Klass, Student, StudentForm, StudentDeleteForm, TeacherForm
 from homepage.views import KlassListMixin
 from django.urls import reverse
+from reportlab.lib.pagesizes import letter
+from reportlab.pdfgen import canvas
+from reportlab.lib.units import inch
+from reportlab.platypus import SimpleDocTemplate,Table, Paragraph
+from reportlab.lib.styles import ParagraphStyle
+from django.http import HttpResponse
+
 
 
 class KlassScheduleView(KlassListMixin, TemplateView):
@@ -109,7 +116,7 @@ class EditSlotView(KlassListMixin, FormView):
 
 class PrintScheduleView(KlassListMixin, TemplateView):
     template_name='schedule/print.html'
-
+    
     def get_context_data(self, **kwargs):
         context=super(PrintScheduleView, self).get_context_data(**kwargs)
         klass=Klass.objects.get(pk=self.kwargs['klass'])
@@ -117,4 +124,52 @@ class PrintScheduleView(KlassListMixin, TemplateView):
         context['klass_pm_schedule']=Slot.objects.filter(klass=klass, am_pm='pm').order_by('start')
         context['klass_am_schedule']=Slot.objects.filter(klass=klass, am_pm='am').order_by('start')
         return context
+
+def PrintPDFView(request, klass):
+    klass=Klass.objects.get(pk=klass)
+    klass_pm_schedule=Slot.objects.filter(klass=klass, am_pm='pm').order_by('start')
+    klass_am_schedule=Slot.objects.filter(klass=klass, am_pm='am').order_by('start')
     
+    response=HttpResponse(content_type='application/pdf')
+    filename=klass.name+'-'+klass.teacher+'.pdf'
+    response['Content-Disposition']='attachement; filename="%s"' %filename
+    
+    doc=SimpleDocTemplate(response, rightMargin=inch, lefMargin=inch, topMargin=inch, bottomMargin=inch)
+    elements=[]
+    title_style=ParagraphStyle(name='Title',fontName='Helvetica',fontSize=14,leading=28)
+    subtitle_style=ParagraphStyle(name='Sub_Title',fontName='Helvetica',fontSize=12,leading=24)
+    
+    #Title
+    elements.append(Paragraph(klass.teacher+' - Gr. '+klass.grade+' - Rm. '+klass.room,title_style))
+    elements.append(Paragraph('Conference Schedule',title_style))
+    
+    #Thursday
+    elements.append(Paragraph('Thursday Evening',subtitle_style))
+    
+    data=[('Start Time','End Time','Student'),]
+    for slot in klass_pm_schedule:
+        if slot.student:
+            a=slot.student.last_name
+            data.append((slot.start, slot.end, slot.student.first_name+' '+slot.student.last_name))
+        else:
+            data.append((slot.start, slot.end, 'Available'))
+    table=Table(data, hAlign='LEFT')
+    elements.append(table)
+ 
+    #Friday
+    elements.append(Paragraph('Friday Morning',subtitle_style))
+    
+    data=[('Start Time','End Time','Student'),]
+    for slot in klass_am_schedule:
+        if slot.student:
+            a=slot.student.last_name
+            data.append((slot.start, slot.end, slot.student.first_name+' '+slot.student.last_name))
+        else:
+            data.append((slot.start, slot.end, 'Available'))   
+    
+    
+    table=Table(data, hAlign='LEFT')
+    elements.append(table)
+    doc.build(elements)
+    
+    return response
