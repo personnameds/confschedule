@@ -9,11 +9,10 @@ from datetime import date, datetime, timedelta
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.conf import settings
 
-class KlassCreateView(PermissionRequiredMixin, KlassListMixin, CreateView):
+class KlassCreateView(KlassListMixin, CreateView):
     model=Klass
     form_class=KlassForm
     template_name='classlists/add_klass_form.html'
-    permission_required='classlists.add_klass'
     
     def form_valid(self, form):
         new_klass=form.save()
@@ -44,11 +43,10 @@ class KlassCreateView(PermissionRequiredMixin, KlassListMixin, CreateView):
 
         return HttpResponseRedirect(reverse_lazy('homepage-view'))
 
-class KlassScheduleCreateView(PermissionRequiredMixin, KlassListMixin, CreateView):
+class KlassScheduleCreateView(KlassListMixin, CreateView):
     model=KlassScheduleDetails
     form_class=KlassScheduleForm
     template_name='schedule/klassschedule.html'
-    permission_required='classlists.add_klass'
     
     def form_valid(self, form):
         new_schedule=form.save()
