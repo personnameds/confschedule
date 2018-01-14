@@ -1,6 +1,7 @@
 static/
 static_root/
-env/*
+venv/
 SECRET_KEY
 settings_local.py
 *.pyc
+conf.txt
