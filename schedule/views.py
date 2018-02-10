@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.views.generic.base import TemplateView
 from django.views.generic.edit import CreateView, FormView
-from .models import SchoolScheduleDetails, Slot, SlotForm
+from .models import Standard_Day_Schedule, Slot, SlotForm
 from classlists.models import Klass, Student, StudentForm, StudentDeleteForm, TeacherForm
 from homepage.views import KlassListMixin
 from django.urls import reverse
@@ -19,40 +19,45 @@ class KlassScheduleView(KlassListMixin, TemplateView):
 
     def get_context_data(self, **kwargs):
         context=super(KlassScheduleView, self).get_context_data(**kwargs)
-        klass=Klass.objects.get(pk=self.kwargs['klass'])
+        klass=Klass.objects.get(pk=self.kwargs['klass_id'])
         context['klass']=klass
-        context['klass_pm_schedule']=Slot.objects.filter(klass=klass, am_pm='pm').order_by('start')
-        context['klass_am_schedule']=Slot.objects.filter(klass=klass, am_pm='am').order_by('start')
+        
+        int_dates=Slot.objects.filter(klass=klass).dates('int_date', 'day')
+        
+        klass_schedule=[]
+        for int_date in int_dates:
+        	klass_schedule.append((int_date,Slot.objects.filter(klass=klass, int_date=int_date).order_by('int_date').order_by('start')))
+        	
+        context['klass_schedule']=klass_schedule
         return context
 
 class BookSlotView(KlassListMixin, CreateView):
     model=Student
     template_name='schedule/bookslot.html'
-    permission_required='classlists.add_klass'
 
     def get_context_data(self, **kwargs):
         context=super(BookSlotView, self).get_context_data(**kwargs)
-        klass=Klass.objects.get(pk=self.kwargs['klass'])
-        slot=Slot.objects.get(pk=self.kwargs['slot'])
+        klass=Klass.objects.get(pk=self.kwargs['klass_id'])
+        slot=Slot.objects.get(pk=self.kwargs['slot_id'])
         context['klass']=klass
         context['slot']=slot
         return context
 
     def get_form_class(self):
-        if self.request.user.is_authenticated():
-            form_class=TeacherForm
+        if self.request.user.is_authenticated:
+        	form_class=TeacherForm
         else:
             form_class=StudentForm
         return form_class
     
     def get_initial(self):
         initial=super(BookSlotView, self).get_initial()
-        klass=Klass.objects.get(pk=self.kwargs['klass'])
+        klass=Klass.objects.get(pk=self.kwargs['klass_id'])
         initial['klass']=klass
         return initial
     
     def form_valid(self, form):
-        slot=Slot.objects.get(pk=self.kwargs['slot'])
+        slot=Slot.objects.get(pk=self.kwargs['slot_id'])
         if form.prefix=='teacher':
             if form.cleaned_data['notavail']==True:
                 slot.not_available=True
@@ -68,7 +73,7 @@ class BookSlotView(KlassListMixin, CreateView):
         return super(BookSlotView, self).form_valid(form)
         
     def get_success_url(self):
-        klass=Klass.objects.get(pk=self.kwargs['klass'])
+        klass=Klass.objects.get(pk=self.kwargs['klass_id '])
         return reverse('klass-schedule-view', args=[klass.pk])
 
 class EditSlotView(KlassListMixin, FormView):
@@ -146,16 +151,26 @@ class PrintScheduleView(KlassListMixin, TemplateView):
     
     def get_context_data(self, **kwargs):
         context=super(PrintScheduleView, self).get_context_data(**kwargs)
-        klass=Klass.objects.get(pk=self.kwargs['klass'])
+        klass=Klass.objects.get(pk=self.kwargs['klass_id'])
         context['klass']=klass
-        context['klass_pm_schedule']=Slot.objects.filter(klass=klass, am_pm='pm').order_by('start')
-        context['klass_am_schedule']=Slot.objects.filter(klass=klass, am_pm='am').order_by('start')
+        
+        int_dates=Slot.objects.filter(klass=klass).dates('int_date', 'day')
+        
+        klass_schedule=[]
+        for int_date in int_dates:
+        	klass_schedule.append((int_date,Slot.objects.filter(klass=klass, int_date=int_date).order_by('int_date').order_by('start')))
+        	
+        context['klass_schedule']=klass_schedule
         return context
-
-def PrintPDFView(request, klass):
-    klass=Klass.objects.get(pk=klass)
-    klass_pm_schedule=Slot.objects.filter(klass=klass, am_pm='pm').order_by('start')
-    klass_am_schedule=Slot.objects.filter(klass=klass, am_pm='am').order_by('start')
+        
+def PrintPDFView(request, klass_id):
+    klass=Klass.objects.get(pk=klass_id)
+    
+    int_dates=Slot.objects.filter(klass=klass).dates('int_date', 'day')
+    
+    klass_schedule=[]
+    for int_date in int_dates:
+    	klass_schedule.append((int_date,Slot.objects.filter(klass=klass, int_date=int_date).order_by('int_date').order_by('start')))
     
     response=HttpResponse(content_type='application/pdf')
     filename=klass.name+'-'+klass.teacher+'.pdf'
@@ -170,33 +185,20 @@ def PrintPDFView(request, klass):
     elements.append(Paragraph(klass.teacher+' - Gr. '+klass.grade+' - Rm. '+klass.room,title_style))
     elements.append(Paragraph('Conference Schedule',title_style))
     
-    #Thursday
-    elements.append(Paragraph('Thursday Evening',subtitle_style))
+    for int_date, klass_day_schedule in klass_schedule:
     
-    data=[('Start Time','End Time','Student'),]
-    for slot in klass_pm_schedule:
-        if slot.student:
-            a=slot.student.last_name
-            data.append((slot.start, slot.end, slot.student.first_name+' '+slot.student.last_name))
-        else:
-            data.append((slot.start, slot.end, 'Available'))
-    table=Table(data, hAlign='LEFT')
-    elements.append(table)
+    	elements.append(Paragraph(int_date.strftime("%A %B %d"),subtitle_style))
+
+    	data=[('Start Time','End Time','Student'),]
+    	
+    	for slot in klass_day_schedule:
+    		if slot.student:
+    			data.append((slot.start, slot.end, slot.student.first_name+' '+slot.student.last_name))
+    		else:
+    			data.append((slot.start, slot.end, 'Available'))
+    	table=Table(data, hAlign='LEFT')
+    	elements.append(table)
  
-    #Friday
-    elements.append(Paragraph('Friday Morning',subtitle_style))
-    
-    data=[('Start Time','End Time','Student'),]
-    for slot in klass_am_schedule:
-        if slot.student:
-            a=slot.student.last_name
-            data.append((slot.start, slot.end, slot.student.first_name+' '+slot.student.last_name))
-        else:
-            data.append((slot.start, slot.end, 'Available'))   
-    
-    
-    table=Table(data, hAlign='LEFT')
-    elements.append(table)
     doc.build(elements)
-    
+ 
     return response

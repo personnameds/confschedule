@@ -23,21 +23,24 @@ urlpatterns = [
 ]
 """
 
-from django.conf.urls import url, include
+from django.urls import path, include
 from django.contrib import admin
 from django.contrib.auth import views
-#from .views import home
+
+##Development server only
 from django.conf import settings
 from django.conf.urls.static import static
 
 urlpatterns = [
-    url(r'^', include('homepage.urls')),
-    url(r'^add/', include('classlists.urls')),
-    url(r'^(?P<klass>\d+)/', include('schedule.urls')),
-    url(r'^login/$', views.login, name='login'),
-    url(r'^logout/$', views.logout, {'next_page':'/'}, name='logout'),
-    url(r'^auth/', include('social_django.urls', namespace='social')),
-#    url(r'^$', home, name='home'),
-    url(r'^admin/', admin.site.urls),
+    path('', include('homepage.urls')),
+    path('add/', include('classlists.urls')),
+    
+    path('<int:klass_id>/', include('schedule.urls')),
+    
+    path('login/', views.login, name='login'),
+    path('logout/', views.logout, {'next_page':'/'}, name='logout'),
+    path('auth/', include('social_django.urls', namespace='social')),
+    path('oauth2/', include('oauth2.urls')),
+    path('admin/', admin.site.urls),
 
 ]+ static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

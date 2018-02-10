@@ -1,8 +1,10 @@
-from django.conf.urls import url
-from .views import KlassCreateView, KlassScheduleCreateView
+from django.urls import path
+from .views import KlassCreateView, KlassScheduleFormOneView, KlassScheduleFormTwoView
 from django.contrib.admin.views.decorators import staff_member_required
 
 urlpatterns = [
-    url(r'^class$', staff_member_required(KlassCreateView.as_view()), name='klass-create-view'),
-    url(r'^schedule/', staff_member_required(KlassScheduleCreateView.as_view()), name='klass-schedule-create-view'),
+    path('class', staff_member_required(KlassCreateView.as_view()), name='klass-create-view'),
+    path('schedule_dates', staff_member_required(KlassScheduleFormOneView.as_view()), name='klass-schedule-create-one-view'),
+    path('schedule_info', staff_member_required(KlassScheduleFormTwoView.as_view()), name='klass-schedule-create-two-view'),
+
 ]

@@ -6,7 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
-    <title>QV Conference Schedule</title>
+    <title>{{school_name}} Conference Schedule</title>
 
     <!-- Bootstrap -->
     <link href="{% static 'bootstrap-3.3.7-dist/css/bootstrap.min.css' %}" rel="stylesheet">
@@ -19,7 +19,7 @@
     <![endif]-->
   </head>
   <body>
-  
+
     <div class="container-fluid">
         <div class="row">
             
@@ -34,11 +34,11 @@
                     {% endif %}
                     {% if perms.is_staff %}
                         <li><a href="{% url 'klass-create-view' %}">Add Class</a></li>
-                        <li><a href="{% url 'klass-schedule-create-view' %}">Create Class Schedule</a></li>
+                        <li><a href="{% url 'klass-schedule-create-two-view' %}">Create Class Schedule</a></li>
                         <li><a href="{% url 'admin:index' %}">Admin</a></li>
                     {% endif %}
                     {% for klass in list_of_classes %}
-                        <li role="navigation"><a href="{% url 'klass-schedule-view' klass.pk %}">{{klass.teacher}}-Gr.{{klass.grade}}-Rm.{{klass.room}}</a></li>
+                        <li role="navigation"><a href="{% url 'klass-schedule-view' klass_id=klass.id %}">{{klass.id}} {{klass.teacher}}-Gr.{{klass.grade}}-Rm.{{klass.room}}</a></li>
                     {% endfor %}
                 </ul>
             </div>

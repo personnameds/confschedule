@@ -3,20 +3,24 @@
 {% block main_content %}
     <h1>{{klass.teacher}} - Gr. {{klass.grade}} - Rm. {{klass.room}}</h1>
     <h2>Conference Schedule</h2>
-    <h3>Thursday Evening</h3>
-    <table class="table table-hover table-condensed">
-        <thead>
-            <tr>
-                <th>Start Time</th>
-                <th>End Time</th>
-                <th>Student</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for slot in klass_pm_schedule %}
+
+    {% for int_date, klass_day_schedule in klass_schedule %}
+    	<h3>{{int_date|date:"l F jS"}}</h3>
+    	
+			<table class="table table-hover table-condensed">
+			<thead>
+				<tr>
+					<th>Start Time</th>
+					<th>End Time</th>
+					<th>Student</th>
+				</tr>
+			</thead>
+			<tbody>
+       
+            {% for slot in klass_day_schedule %}
                 <tr class="info">
-                    <td>{{slot.start}}</td>
-                    <td>{{slot.end}}</td>
+					<td>{{slot.start|time:'g:i'}}</td>
+                    <td>{{slot.end|time:'g:i A'}}</td>
                     <td>
                         {% if slot.student %}
                             {{slot.student.first_name}} {{slot.student.last_name|slice:":1"}}.
@@ -27,34 +31,10 @@
                         {% endif %}
                     </td>
                 </tr>
-         {% endfor %}
-        </tbody>
-    </table>
-    <h3>Friday Morning</h3>
-    <table class="table table-hover table-condensed">
-        <thead>
-            <tr>
-                <th>Start Time</th>
-                <th>End Time</th>
-                <th>Student</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for slot in klass_am_schedule %}
-                <tr class="info">
-                    <td>{{slot.start}}</td>
-                    <td>{{slot.end}}</td>
-                    <td>
-                        {% if slot.student %}
-                            {{slot.student.first_name}} {{slot.student.last_name|slice:":1"}}.
-                        {% elif slot.not_available %}
-                                Not Available
-                        {% else %}
-                            Available
-                        {% endif %}
-                    </td>
-                </tr>
-         {% endfor %}
-        </tbody>
-    </table>
+         	{% endfor %}
+        
+        	</tbody>
+    	</table>
+	{% endfor %}
+	
 {% endblock %}

@@ -2,7 +2,7 @@
 
 {% block main_content %}
     <h2>Create Class Schedule</h2>
-    <form action="{% url 'klass-schedule-create-view' %}" method="POST">
+    <form action="{% url 'klass-schedule-create-two-view' %}" method="POST">
         {%csrf_token%}
         {{form.as_p}}
         <div class="form_input"> 

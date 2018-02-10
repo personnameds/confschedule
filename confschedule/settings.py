@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'schedule.apps.ScheduleConfig',
     'classlists.apps.ClasslistsConfig',
+    'oauth2.apps.Oauth2Config',
     'social_django',
 ]
 
